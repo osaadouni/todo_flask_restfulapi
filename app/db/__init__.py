@@ -1,1 +1,1 @@
-"""Contains initial"""
+"""Contains db initialization"""

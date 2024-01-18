@@ -1,6 +1,7 @@
 """Contains entrypoint of application."""
-from app import app
+from app import create_app
 
+my_app = create_app()
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    my_app.run(debug=True)
