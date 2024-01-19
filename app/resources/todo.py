@@ -1,5 +1,6 @@
 """Contains resource for the todo application."""
-from flask_restx import Resource, reqparse, fields
+from flask_restx import Resource, reqparse, fields, abort, marshal
+from flask import request, jsonify
 
 from ..models.todo import Todo
 from ..extensions import db, api
@@ -10,8 +11,19 @@ ns = api.namespace('todos', description='TODO operations')
 # Define a data model for a TODO item
 todo_model = api.model('Todo', {
     'id': fields.Integer(readonly=True, description='The task unique identifier'),
-    'task': fields.String(required=True, description='The task details')
+    'task': fields.String(required=True, description='The task details'),
+    'uri': fields.Url('todo_resource', absolute=True),
 })
+
+resource_fields = {
+    "start": fields.Integer(readonly=True, description="The start of pagination"),
+    "limit": fields.Integer(readonly=True, description="The number todo items on each page"),
+    "count": fields.Integer(readonly=True, description="The total of todo items."),
+    "previous": fields.String(readonly=True, description="The previous list of todo items."),
+    "next": fields.String(readonly=True, description="The next list of todo items."),
+    'data': fields.List(fields.Nested(todo_model))
+}
+response_model = api.model("Result", resource_fields)
 
 # Request parser for handling task input
 parser = reqparse.RequestParser()
@@ -68,14 +80,19 @@ class TodoResource(Resource):
 class TodoListResource(Resource):
     """Handles a list of todos and adds new todos."""
     @ns.doc('list_todos')
-    @ns.marshal_list_with(todo_model)
+    # @ns.marshal_list_with(todo_model)
+    @ns.marshal_with(response_model)
     def get(self) -> list:
         """Get all todo items.
 
         :return: List of all todo items.
         """
         todos = Todo.query.all()
-        return todos
+        return self.get_paginated_list(
+            todos, '/todos',
+            start=request.args.get('start', 1),
+            limit=request.args.get('limit', 20)
+        )
 
     @ns.doc('create_todo')
     @ns.expect(todo_model)
@@ -90,3 +107,32 @@ class TodoListResource(Resource):
         db.session.add(todo)
         db.session.commit()
         return todo, 201
+
+    def get_paginated_list(self, data, url, start, limit):
+        start = int(start)
+        limit = int(limit)
+        count = len(data)
+        if count < start or limit < 0:
+            abort(404)
+
+        result = {
+            'start': start,
+            'limit': limit,
+            'count': count,
+        }
+        # make previous url
+        if start == 1:
+            result['previous'] = ''
+        else:
+            start_copy = max(1, start - limit)
+            limit_copy = start - 1
+            result['previous'] = url + '?start=%d&limit=%d' % (start_copy, limit_copy)
+        # make next url
+        if start + limit > count:
+            result['next'] = ''
+        else:
+            start_copy = start + limit
+            result['next'] = url + '?start=%d&limit=%d' % (start_copy, limit)
+        # finally extract result according to bounds
+        result['data'] = marshal(data[(start - 1):(start - 1 + limit)], todo_model)
+        return result
