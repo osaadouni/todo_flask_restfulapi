@@ -1,4 +1,4 @@
-"""Contains application initialization."""
+"""Contains factory for application instances."""
 from flask import Flask
 from config import SQLALCHEMY_DATABASE_URI, SQLALCHEMY_TRACK_MODIFICATIONS
 from .extensions import db, api

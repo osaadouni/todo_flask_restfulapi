@@ -1,3 +1,4 @@
+"""Contains models for todo application."""
 from app.extensions import db
 
 
