@@ -8,4 +8,5 @@ db = SQLAlchemy()
 # Initialize API for building RESTful services
 api = Api(version='1.0', title='Todo API',
     description='A simple Todo API',
+    url_prefix='/api/v1'
 )

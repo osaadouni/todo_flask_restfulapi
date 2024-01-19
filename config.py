@@ -1,12 +1,48 @@
-# config.py
+"""Contains configurations for different environments."""
 
-# Database URI for SQLAlchemy to connect to. Here, it's set to use a SQLite database named 'todo.db'.
-SQLALCHEMY_DATABASE_URI = 'sqlite:///todo.db'
+class Config:
+    """
+    Base configuration class.
 
-# Disable Flask-SQLAlchemy modification tracking, as it's not needed in this application.
-SQLALCHEMY_TRACK_MODIFICATIONS = False
+    Attributes:
+        SQLALCHEMY_TRACK_MODIFICATIONS (bool): Whether to track modifications in SQLAlchemy.
+    """
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-# This module contains configuration settings for the Flask application.
-# The 'SQLALCHEMY_DATABASE_URI' is set to use a SQLite database named 'todo.db'.
-# 'SQLALCHEMY_TRACK_MODIFICATIONS' is set to False to disable Flask-SQLAlchemy modification tracking,
-# which is unnecessary for this application.
+
+class DevelopmentConfig(Config):
+    """
+    Development configuration class.
+
+    Attributes:
+        DEBUG (bool): Whether to enable debugging.
+        SQLALCHEMY_DATABASE_URI (str): The URI for the development database.
+    """
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///dev_todo.db'
+
+
+class ProductionConfig(Config):
+    """
+    Production configuration class.
+
+    Attributes:
+        DEBUG (bool): Whether to enable debugging (typically set to False in production).
+        SQLALCHEMY_DATABASE_URI (str): The URI for the production database.
+    """
+    DEBUG = False
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///prod_todo.db'
+
+
+class TestingConfig(Config):
+    """
+    Testing configuration class.
+
+    Attributes:
+        DEBUG (bool): Whether to enable debugging.
+        TESTING (bool): Whether the application is in testing mode.
+        SQLALCHEMY_DATABASE_URI (str): The URI for the testing database.
+    """
+    DEBUG = True
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///test_todo.db'
