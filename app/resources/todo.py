@@ -8,14 +8,20 @@ from ..extensions import db, api
 # Define a namespace for TODO operations
 ns = api.namespace('todos', description='TODO operations')
 
-# Define a data model for a TODO item
-todo_model = api.model('Todo', {
+# Define resource_fields for the model
+resource_fields = {
     'id': fields.Integer(readonly=True, description='The task unique identifier'),
     'task': fields.String(required=True, description='The task details'),
-    'uri': fields.Url('todo_resource', absolute=True),
-})
+    'done': fields.Boolean(required=False, description="The task status", default=False),
+    'created_at': fields.DateTime(readonly=True, description="The time when the task was created"),
+    'updated_at': fields.DateTime(readonly=True, description="The time when the task was modified"),
+    # 'uri': fields.Url('todo_resource', readonly=True, absolute=True),
+}
 
-resource_fields = {
+# Define a data model for a TODO item
+todo_model = api.model('Todo', resource_fields)
+
+response_resource_fields = {
     "start": fields.Integer(readonly=True, description="The start of pagination"),
     "limit": fields.Integer(readonly=True, description="The number todo items on each page"),
     "count": fields.Integer(readonly=True, description="The total of todo items."),
@@ -23,11 +29,13 @@ resource_fields = {
     "next": fields.String(readonly=True, description="The next list of todo items."),
     'data': fields.List(fields.Nested(todo_model))
 }
-response_model = api.model("Result", resource_fields)
+response_model = api.model("Result", response_resource_fields)
 
 # Request parser for handling task input
 parser = reqparse.RequestParser()
-parser.add_argument('task', type=str, required=True)
+parser.add_argument('task', type=str)
+parser.add_argument('done', type=int)
+
 
 @ns.route('/<int:todo_id>')
 @ns.response(404, "Todo not found")
@@ -71,7 +79,10 @@ class TodoResource(Resource):
         """
         args = parser.parse_args()
         todo = Todo.query.get_or_404(todo_id)
-        todo.task = args['task']
+        if args.get('task') is not None:
+            todo.task = args['task']
+        if args.get('done') is not None:
+            todo.done = args['done']
         db.session.commit()
         return todo
 
@@ -88,6 +99,7 @@ class TodoListResource(Resource):
         :return: List of all todo items.
         """
         todos = Todo.query.all()
+
         return self.get_paginated_list(
             todos, '/todos',
             start=request.args.get('start', 1),
@@ -103,7 +115,13 @@ class TodoListResource(Resource):
         :return: Newly created todo item with status code 201.
         """
         args = parser.parse_args()
+        if args.get('task') is None:
+            abort(400, "Task description is required!")
         todo = Todo(args['task'])
+
+        if args.get('done') is not None:
+            todo.done = args['done']
+
         db.session.add(todo)
         db.session.commit()
         return todo, 201
