@@ -96,11 +96,14 @@ class TodoListResource(Resource):
     @ns.marshal_with(response_model)
     def get(self):
 
-        # 1. Searching
-        tasks_query = self._process_search_param()
+        # 1. Filtering
+        tasks_query = self._process_done_query_filter()
 
-        # 2. Sorting
-        tasks_query = self._process_sortby_param(tasks_query)
+        # 2. Searching
+        tasks_query = self._process_search_query_filter(tasks_query)
+
+        # 3. Sorting
+        tasks_query = self._process_sortby_query_filter(tasks_query)
 
         # 3. Pagination
         tasks_query = self._process_pagination(tasks_query)
@@ -136,16 +139,21 @@ class TodoListResource(Resource):
         db.session.commit()
         return todo, 201
 
-    def _process_search_param(self):
-        if (search_query := request.args.get('search')) is not None:
-            tasks_query = Todo.query.filter(
-                Todo.task.ilike(f'%{search_query}%')
-            )
+    def _process_done_query_filter(self):
+        if request.args.get('filter_done', False):
+            tasks_query = Todo.query.filter(Todo.done.is_(True))
         else:
             tasks_query = Todo.query.filter()
         return tasks_query
 
-    def _process_sortby_param(self, tasks_query):
+    def _process_search_query_filter(self, tasks_query):
+        if (search_query := request.args.get('search')) is not None:
+            tasks_query = tasks_query.filter(
+                Todo.task.ilike(f'%{search_query}%')
+            )
+        return tasks_query
+
+    def _process_sortby_query_filter(self, tasks_query):
         sort_by = request.args.get('sort_by', 'id')
         sort_order = request.args.get('sort_order', 'asc')
         return tasks_query.order_by(
