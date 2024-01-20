@@ -38,7 +38,6 @@ parser.add_argument('task', type=str, help='Description of the todo item')
 parser.add_argument('done', type=bool, help='Completion status of the todo item')
 
 
-
 @ns.route('/<int:todo_id>')
 @ns.response(404, "Todo not found")
 @ns.param('todo_id', 'The task identifier')
@@ -101,6 +100,13 @@ class TodoListResource(Resource):
         page = int(request.args.get('page', 1))
         per_page = int(request.args.get('per_page', 10))
         tasks_query = Todo.query.paginate(page=page, per_page=per_page, error_out=False)
+
+        # Searching
+        search_query = request.args.get('search')
+        if search_query:
+            tasks_query = Todo.query.filter(
+                Todo.task.ilike(f'%{search_query}%')
+            ).paginate(page=page, per_page=per_page, error_out=False)
 
         return {
             'total_items': tasks_query.total,
