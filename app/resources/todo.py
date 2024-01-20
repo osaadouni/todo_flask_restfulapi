@@ -96,17 +96,14 @@ class TodoListResource(Resource):
     @ns.marshal_with(response_model)
     def get(self):
 
-        # Pagination
-        page = int(request.args.get('page', 1))
-        per_page = int(request.args.get('per_page', 10))
-        tasks_query = Todo.query.paginate(page=page, per_page=per_page, error_out=False)
+        # 1. Searching
+        tasks_query = self._process_search_param()
 
-        # Searching
-        search_query = request.args.get('search')
-        if search_query:
-            tasks_query = Todo.query.filter(
-                Todo.task.ilike(f'%{search_query}%')
-            ).paginate(page=page, per_page=per_page, error_out=False)
+        # 2. Sorting
+        tasks_query = self._process_sortby_param(tasks_query)
+
+        # 3. Pagination
+        tasks_query = self._process_pagination(tasks_query)
 
         return {
             'total_items': tasks_query.total,
@@ -138,3 +135,23 @@ class TodoListResource(Resource):
         db.session.add(todo)
         db.session.commit()
         return todo, 201
+
+    def _process_search_param(self):
+        if (search_query := request.args.get('search')) is not None:
+            tasks_query = Todo.query.filter(
+                Todo.task.ilike(f'%{search_query}%')
+            )
+        else:
+            tasks_query = Todo.query.filter()
+        return tasks_query
+
+    def _process_sortby_param(self, tasks_query):
+        sort_by = request.args.get('sort_by', 'id')
+        sort_order = request.args.get('sort_order', 'asc')
+        return tasks_query.order_by(
+            getattr(Todo, sort_by).desc() if sort_order == 'desc' else getattr(Todo, sort_by))
+
+    def _process_pagination(self, tasks_query):
+        page = int(request.args.get('page', 1))
+        per_page = int(request.args.get('per_page', 10))
+        return tasks_query.paginate(page=page, per_page=per_page, error_out=False)
