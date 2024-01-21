@@ -1,10 +1,10 @@
 """Contains common fixtures for pytest."""
 
-from app import db
-from config import TestingConfig
-
 import pytest
-from app import create_app
+from flask_jwt_extended import create_access_token
+
+from app import create_app, db
+from config import TestingConfig
 
 
 # Fixture to create and configure the Flask app for testing
@@ -46,3 +46,9 @@ def client(app):
     """
     return app.test_client()
 
+
+@pytest.fixture
+def auth_headers():
+    # Create a JWT token with a mock user ID
+    token = create_access_token(identity=1)
+    return {"Authorization": f"Bearer {token}"}
