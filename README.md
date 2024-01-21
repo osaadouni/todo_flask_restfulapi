@@ -24,7 +24,25 @@ the endpoint:
 
 > `/users/login`
 
-The authentication is based on a **JWT token** generation. On a successful login an 'access_token' is
+**Example**:
+
+Request:
+> `curl -X 'POST'
+  'http://127.0.0.1:5000/users/login'
+  -H 'accept: application/json'
+  -H 'Content-Type: application/json'
+  -d '{
+  "username": "omar",
+  "password": "secretpass"
+}'`
+
+Response:
+> `{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcwNTg3NzAxOCwianRpIjoiMjg4NWUxYTQtMzllNC00MTYwLTkzZmUtNDIxY2QyNmUzZDFlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNzA1ODc3MDE4LCJjc3JmIjoiOTBjNmFkY2MtNDIxYy00ZTk5LTllMGUtMTlkYTQ3ZDE5NzA5In0.EPvUtYsOv_7Iiwm6vkzYq08lbhVxu03w44pB84j8Wxg",
+  "user": "omar"
+}`
+
+The authentication is based on a **JWT token** generation. On a successful login an '**access_token**' is
 returned which can be used for authorization in the request header as a **Bearer token** for subsequent requests.
 
 > `Authorization: Bearer <access_token>`
