@@ -8,6 +8,26 @@ authentication and (given time) the goal is to enable authorization on
 the appropriate access points.
 The application comes with a Swagger-UI included for easy access and testing
 the access points.
+#### Multiple environment support:
+The application is built to work with different environments:
+development, production and testing, which can be customized to own
+preferences.
+#### Authentication and Authorization:
+A user model has been implemented to support registration and authentication.
+
+The registration process requires a username and a password and can be created through
+the endpoint:
+> `/users/register`
+>
+The login/authentication process requires a username and a password and can be created through
+the endpoint:
+
+> `/users/login`
+
+The authentication on a **JWT token** generation. On a successful login an 'access_token' is
+returned which can be used in the request header as a **Bearer token** for subsequent requests.
+
+> `Authorization: Bearer <access_token>`
 
 ## Features
 
@@ -43,25 +63,36 @@ You can search for tasks using appropriate query parameters.
 #### Pagination:
 
 The API supports pagination to efficiently handle a large number of tasks.
+> `/todos?page=1&per_page=10`
 
 #### Filtering:
 
 Tasks can be filtered based on specific criteria, enhancing the search functionality.
+> `/todos?search=foo`
 
 #### Sorting:
 
 Tasks can be sorted based on various attributes, providing flexibility in viewing the task list.
+> `/todos?sort_by=id&sort_order=desc`
 
 #### Unit Testing
 
 The application includes unit tests using pytest to ensure the reliability and correctness of the implemented features.
+> `pytest`
 
 ### Getting Started
 
 #### Prerequisites
 
-Python 3.x, Flask, Flask-restx, SQLAlchemy and
-other dependencies (specified in requirements.txt)
+> `Flask==3.0.0`
+> `flask-sqlalchemy==3.1.1`
+> `flask-restx==1.3.0`
+> `pytest==7.4.4`
+> `pytest-flask==1.3.0`
+> `pre-commit==3.6.0`
+> `Flask-JWT-Extended==4.6.0`
+> `Flask-Bcrypt==1.0.1`
+
 
 ### Installation
 
