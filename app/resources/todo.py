@@ -6,7 +6,7 @@ from ..extensions import api, db
 from ..models.todo import Todo
 
 # Define a namespace for TODO operations
-ns = api.namespace("todos", description="TODO operations")
+ns = api.namespace("todos", description="Todo operations")
 
 # Define resource_fields for the model
 resource_fields = {
