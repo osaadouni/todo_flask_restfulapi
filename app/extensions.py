@@ -12,9 +12,9 @@ token_attrs = {"type": "apiKey", "in": "header", "name": "Authorization"}
 authorizations = {"Bearer": token_attrs}
 api = Api(
     version="1.0",
-    title="Flask Todo API with JWT-Based Authentication",
-    description="Welcome to the Swagger UI documentation site!",
-    doc="/ui",
+    title="Task Management Application with Flask REST API",
+    description="Welcom to the Swagger UI documentation!",
+    doc="/swagger-ui",
     authorizations=authorizations,
 )
 
