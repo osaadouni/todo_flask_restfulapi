@@ -1,12 +1,13 @@
 """Contains resource for the todo application."""
 from flask import request
+from flask_jwt_extended import jwt_required
 from flask_restx import Resource, abort, fields, reqparse
 
 from ..extensions import api, db
 from ..models.todo import Todo
 
 # Define a namespace for TODO operations
-ns = api.namespace("todos", description="Todo operations")
+ns = api.namespace("todos", description="Todo operations (CRUD)")
 
 # Define resource_fields for the model
 resource_fields = {
@@ -53,6 +54,7 @@ class TodoResource(Resource):
     Contains methods for retrieving, deleting, and updating a single todo item.
     """
 
+    @jwt_required()
     @ns.doc("get_todo")
     @ns.marshal_with(todo_model)
     def get(self, todo_id: int) -> dict:
@@ -64,6 +66,7 @@ class TodoResource(Resource):
         todo = Todo.query.get_or_404(todo_id)
         return todo
 
+    @jwt_required()
     @ns.doc("delete_todo")
     @ns.response(204, "Todo deleted successfully")
     def delete(self, todo_id: int) -> tuple:
@@ -77,6 +80,7 @@ class TodoResource(Resource):
         db.session.commit()
         return "", 204
 
+    @jwt_required()
     @ns.expect(todo_model)
     @ns.marshal_with(todo_model)
     def put(self, todo_id: int) -> tuple:
@@ -99,6 +103,7 @@ class TodoResource(Resource):
 class TodoListResource(Resource):
     """Handles a list of todos and adds new todos."""
 
+    @jwt_required()
     @ns.doc("list_todos")
     @ns.marshal_with(response_model)
     def get(self):
@@ -125,6 +130,7 @@ class TodoListResource(Resource):
             "items": tasks_query.items,
         }
 
+    @jwt_required()
     @ns.doc("create_todo")
     @ns.expect(todo_model)
     @ns.marshal_with(todo_model, code=201)

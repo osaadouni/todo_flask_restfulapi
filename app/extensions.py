@@ -8,14 +8,16 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 # Initialize API for building RESTful services
-token_attrs = {"type": "apiKey", "in": "header", "name": "Authorization"}
-authorizations = {"Bearer": token_attrs}
+authorizations = {
+    "Bearer Auth": {"type": "apiKey", "in": "header", "name": "Authorization"},
+}
 api = Api(
     version="1.0",
     title="Task Management Application with Flask REST API",
     description="Welcom to the Swagger UI documentation!",
     doc="/swagger-ui",
     authorizations=authorizations,
+    security="Bearer Auth",
 )
 
 bcrypt = Bcrypt()

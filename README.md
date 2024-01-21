@@ -89,20 +89,48 @@ accessing the UI at /swagger-ui/ .
 
 #### Retrieve all tasks:
 
-> `curl http://localhost:5000/todos`
+> `curl -X 'GET'
+  'http://127.0.0.1:5000/todos/'
+  -H 'accept: application/json'
+  -H 'Authorization: Bearer X.Y.Z'
+ `
 
 #### Retrieve a specific task:
 
-> `curl http://localhost:5000/todos/1`
+> `curl -X 'GET'
+  'http://127.0.0.1:5000/todos/2'
+  -H 'accept: application/json'
+  -H 'Authorization: Bearer X.Y.Z'`
 
 #### Add a new task:
 
-> `curl -X POST -H "Content-Type: application/json" -d '{"task": "New Task"}' `http://localhost:5000/tasks
+> `curl -X 'POST'
+  'http://127.0.0.1:5000/todos/'
+  -H 'accept: application/json'
+  -H 'Authorization: Bearer X.Y.Z'
+  -H 'Content-Type: application/json'
+  -d '{
+  "task": "Do something today",
+  "done": false
+}'`
 
 #### Delete a task:
 
-> `curl -X DELETE http://localhost:5000/todos/1`
+> `curl -X 'DELETE'
+  'http://127.0.0.1:4000/todos/6'
+  -H 'accept: application/json'
+  -H 'Authorization: Bearer X.Y.Z'`
 
+#### Update a task:
+> `curl -X 'PUT'
+  'http://127.0.0.1:5000/todos/2'
+  -H 'accept: application/json'
+  -H 'Authorization: Bearer x.y.z'
+  -H 'Content-Type: application/json'
+  -d '{
+  "task": "Changes to task with ID 2",
+  "done": true
+}'`
 
 ### Swagger UI docs
 Swagger UI provides access to a UI with all available endpoints
