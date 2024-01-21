@@ -24,8 +24,8 @@ the endpoint:
 
 > `/users/login`
 
-The authentication on a **JWT token** generation. On a successful login an 'access_token' is
-returned which can be used in the request header as a **Bearer token** for subsequent requests.
+The authentication is based on a **JWT token** generation. On a successful login an 'access_token' is
+returned which can be used for authorization in the request header as a **Bearer token** for subsequent requests.
 
 > `Authorization: Bearer <access_token>`
 
