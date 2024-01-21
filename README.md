@@ -1,7 +1,13 @@
-# Simple Tasks Flask API
+# Task Management App with Flask RESTful API
 
-This is a simple Flask REST API for managing a todo list.
-The API provides basic operations for handling tasks, including retrieving all tasks, getting a specific task, adding a new task, and deleting an existing task.
+This is a simple Flask REST API application for managing a task list.
+The API provides basic operations for handling tasks,
+including retrieving all tasks, getting a specific task,
+adding a new task, and deleting an existing task. It also provides user
+authentication and (given time) the goal is to enable authorization on
+the appropriate access points.
+The application comes with a Swagger-UI included for easy access and testing
+the access points.
 
 ## Features
 
@@ -61,17 +67,17 @@ other dependencies (specified in requirements.txt)
 
 #### Clone the repository:
 
-`
+> `
 git clone https://github.com/osaadouni/todo_flask_restfulapi.git
 `
 
 #### Install dependencies:
 
-`pip install -r requirements.txt`
+> `pip install -r requirements.txt`
 
 #### Run the application:
 
-`python run.py`
+> `python run.py`
 
 ### Usage
 
@@ -83,23 +89,46 @@ accessing the UI at /swagger-ui/ .
 
 #### Retrieve all tasks:
 
-`curl http://localhost:5000/todos`
+> `curl http://localhost:5000/todos`
 
 #### Retrieve a specific task:
 
-`curl http://localhost:5000/todos/1`
+> `curl http://localhost:5000/todos/1`
 
 #### Add a new task:
 
-`curl -X POST -H "Content-Type: application/json" -d '{"task": "New Task"}' `http://localhost:5000/tasks
+> `curl -X POST -H "Content-Type: application/json" -d '{"task": "New Task"}' `http://localhost:5000/tasks
 
 #### Delete a task:
 
-`curl -X DELETE http://localhost:5000/todos/1`
+> `curl -X DELETE http://localhost:5000/todos/1`
 
 
 ### Swagger UI docs
-Swagger UI provides access to a UI with all available endpoints of the application
+Swagger UI provides access to a UI with all available endpoints
+of the application (managing tasks operations and user registration
+and authentication).
 
 #### Access URL for Swagger API endpoints:
-`http://localhost:5000/swagger-ui/`
+>`http://localhost:5000/swagger-ui/`
+
+
+### Testing
+The application has a couple of unit tests written in pytest (fixtures)
+included for the most operations.
+
+You can run tests locally by typing:
+
+> `pytest`
+
+
+### pre-commit
+The application code comes with pre-commit support and configuration hooks
+for the most code quality check tools available
+(isort, flake8 , black, ruff ..etc)
+
+Install
+> `pip install pre-commit`
+
+Run:
+> `pre-commit install`
