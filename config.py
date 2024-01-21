@@ -1,13 +1,19 @@
 """Contains configurations for different environments."""
 
+
 class Config:
     """
     Base configuration class.
 
     Attributes:
-        SQLALCHEMY_TRACK_MODIFICATIONS (bool): Whether to track modifications in SQLAlchemy.
+        SQLALCHEMY_TRACK_MODIFICATIONS (bool): Whether to track modifications
+                                               in SQLAlchemy.
     """
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    JWT_SECRET_KEY = "your-secret-key"
+    JWT_ACCESS_TOKEN_EXPIRES = False
 
 
 class DevelopmentConfig(Config):
@@ -18,8 +24,9 @@ class DevelopmentConfig(Config):
         DEBUG (bool): Whether to enable debugging.
         SQLALCHEMY_DATABASE_URI (str): The URI for the development database.
     """
+
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///dev_todo.db'
+    SQLALCHEMY_DATABASE_URI = "sqlite:///dev_todo.db"
 
 
 class ProductionConfig(Config):
@@ -27,11 +34,12 @@ class ProductionConfig(Config):
     Production configuration class.
 
     Attributes:
-        DEBUG (bool): Whether to enable debugging (typically set to False in production).
+        DEBUG (bool): Whether to enable debugging.
         SQLALCHEMY_DATABASE_URI (str): The URI for the production database.
     """
+
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///prod_todo.db'
+    SQLALCHEMY_DATABASE_URI = "sqlite:///prod_todo.db"
 
 
 class TestingConfig(Config):
@@ -43,6 +51,7 @@ class TestingConfig(Config):
         TESTING (bool): Whether the application is in testing mode.
         SQLALCHEMY_DATABASE_URI (str): The URI for the testing database.
     """
+
     DEBUG = True
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///test_todo.db'
+    SQLALCHEMY_DATABASE_URI = "sqlite:///test_todo.db"

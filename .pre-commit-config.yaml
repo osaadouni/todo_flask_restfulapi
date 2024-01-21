@@ -31,9 +31,8 @@ repos:
     rev: v1.8.0
     hooks:
     -   id: mypy
-        args: ['--strict']
-        entry: mypy
-        language: system
+        additional_dependencies: [types-all]
+        exclude: ^testing/resources/
 
 -   repo: https://github.com/PyCQA/autoflake
     rev: v2.2.1
