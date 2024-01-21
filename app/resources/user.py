@@ -6,7 +6,7 @@ from ..extensions import api, bcrypt, db
 from ..models.user import User
 
 # Define a namespace for User operations
-ns = api.namespace("users", description="User operations")
+ns = api.namespace("users", description="User operations (Register and Login)")
 
 
 # Define register resource_fields for the model
